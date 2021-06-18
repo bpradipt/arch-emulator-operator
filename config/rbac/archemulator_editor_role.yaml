@@ -1,0 +1,24 @@
+# permissions for end users to edit archemulators.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: archemulator-editor-role
+rules:
+- apiGroups:
+  - emulator.multiarch.io
+  resources:
+  - archemulators
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - emulator.multiarch.io
+  resources:
+  - archemulators/status
+  verbs:
+  - get

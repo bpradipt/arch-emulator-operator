@@ -1,0 +1,11 @@
+domain: multiarch.io
+layout: go.kubebuilder.io/v2
+projectName: arch-emulator-operator
+repo: github.com/arch-emulator-operator
+resources:
+- group: emulator
+  kind: ArchEmulator
+  version: v1alpha1
+version: 3-alpha
+plugins:
+  go.sdk.operatorframework.io/v2-alpha: {}

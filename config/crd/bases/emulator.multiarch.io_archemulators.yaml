@@ -1,0 +1,162 @@
+
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.3.0
+  creationTimestamp: null
+  name: archemulators.emulator.multiarch.io
+spec:
+  group: emulator.multiarch.io
+  names:
+    kind: ArchEmulator
+    listKind: ArchEmulatorList
+    plural: archemulators
+    singular: archemulator
+  scope: Namespaced
+  subresources:
+    status: {}
+  validation:
+    openAPIV3Schema:
+      description: ArchEmulator is the Schema for the archemulators API
+      properties:
+        apiVersion:
+          description: 'APIVersion defines the versioned schema of this representation
+            of an object. Servers should convert recognized schemas to the latest
+            internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+          type: string
+        kind:
+          description: 'Kind is a string value representing the REST resource this
+            object represents. Servers may infer this from the endpoint the client
+            submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+          type: string
+        metadata:
+          type: object
+        spec:
+          description: ArchEmulatorSpec defines the desired state of ArchEmulator
+          properties:
+            emulator:
+              description: Specifies details of the emulator
+              properties:
+                emulatorImage:
+                  description: Container image providing the Emulator binary
+                  type: string
+                emulatorType:
+                  description: Emulator name - eg. Qemu
+                  type: string
+              required:
+              - emulatorType
+              type: object
+            emulatorNodeSelector:
+              description: ArchEmulatorNodeSelector is used to filter the nodes on
+                which to install emulator if not specified, all worker nodes are selected
+              nullable: true
+              properties:
+                matchExpressions:
+                  description: matchExpressions is a list of label selector requirements.
+                    The requirements are ANDed.
+                  items:
+                    description: A label selector requirement is a selector that contains
+                      values, a key, and an operator that relates the key and values.
+                    properties:
+                      key:
+                        description: key is the label key that the selector applies
+                          to.
+                        type: string
+                      operator:
+                        description: operator represents a key's relationship to a
+                          set of values. Valid operators are In, NotIn, Exists and
+                          DoesNotExist.
+                        type: string
+                      values:
+                        description: values is an array of string values. If the operator
+                          is In or NotIn, the values array must be non-empty. If the
+                          operator is Exists or DoesNotExist, the values array must
+                          be empty. This array is replaced during a strategic merge
+                          patch.
+                        items:
+                          type: string
+                        type: array
+                    required:
+                    - key
+                    - operator
+                    type: object
+                  type: array
+                matchLabels:
+                  additionalProperties:
+                    type: string
+                  description: matchLabels is a map of {key,value} pairs. A single
+                    {key,value} in the matchLabels map is equivalent to an element
+                    of matchExpressions, whose key field is "key", the operator is
+                    "In", and the values array contains only "value". The requirements
+                    are ANDed.
+                  type: object
+              type: object
+          required:
+          - emulator
+          type: object
+        status:
+          description: ArchEmulatorStatus defines the observed state of Arch Emulator
+          properties:
+            conditions:
+              description: Conditions is a list of conditions related to operator
+                reconciliation
+              items:
+                description: Condition represents the state of the operator's reconciliation
+                  functionality.
+                properties:
+                  lastHeartbeatTime:
+                    format: date-time
+                    type: string
+                  lastTransitionTime:
+                    format: date-time
+                    type: string
+                  message:
+                    type: string
+                  reason:
+                    type: string
+                  status:
+                    type: string
+                  type:
+                    description: ConditionType is the state of the operator's reconciliation
+                      functionality.
+                    type: string
+                required:
+                - status
+                - type
+                type: object
+              type: array
+            emulator:
+              description: Emulator name - Qemu etc
+              properties:
+                emulatorImage:
+                  description: Container image providing the Emulator binary
+                  type: string
+                emulatorType:
+                  description: Emulator name - eg. Qemu
+                  type: string
+              required:
+              - emulatorType
+              type: object
+            nodes:
+              description: Nodes on which the emulator is installed
+              items:
+                type: string
+              type: array
+          required:
+          - emulator
+          - nodes
+          type: object
+      type: object
+  version: v1alpha1
+  versions:
+  - name: v1alpha1
+    served: true
+    storage: true
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []

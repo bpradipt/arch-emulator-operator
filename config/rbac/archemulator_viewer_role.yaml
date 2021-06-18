@@ -1,0 +1,20 @@
+# permissions for end users to view archemulators.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: archemulator-viewer-role
+rules:
+- apiGroups:
+  - emulator.multiarch.io
+  resources:
+  - archemulators
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - emulator.multiarch.io
+  resources:
+  - archemulators/status
+  verbs:
+  - get

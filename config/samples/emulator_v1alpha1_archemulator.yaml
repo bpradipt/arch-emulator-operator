@@ -1,0 +1,7 @@
+apiVersion: emulator.multiarch.io/v1alpha1
+kind: ArchEmulator
+metadata:
+  name: archemulator-sample
+spec:
+  # Add fields here
+  foo: bar
