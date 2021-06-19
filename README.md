@@ -42,3 +42,30 @@ service/kubernetes   ClusterIP   10.96.0.1    <none>        443/TCP   7d4h
 NAME                            COMPLETIONS   DURATION   AGE
 job.batch/archemulator-sample   1/1           2s         8m4s
 ```
+
+## Uninstall
+```
+$ make uninstall
+```
+
+## Hacking
+
+### Build and Push the container image
+
+Ensure you have access to a container registry like quay.io or hub.docker.com
+```
+export REGISTRY=<registry>
+export REGISTRY_USER=<user>
+```
+
+```
+$ make docker build IMG=${REGISTRY}/${REGISTRY_USER}/arch-emulator-operator
+$ make docker-push IMG=${REGISTRY}/${REGISTRY_USER}/arch-emulator-operator
+```
+
+### Deploy the new image
+```
+$ make install && make deploy IMG=${REGISTRY}/${REGISTRY_USER}/arch-emulator-operator
+```
+
+
