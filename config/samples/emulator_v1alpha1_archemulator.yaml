@@ -3,5 +3,9 @@ kind: ArchEmulator
 metadata:
   name: archemulator-sample
 spec:
-  # Add fields here
-  foo: bar
+  emulatorType:
+    emulatorName: "qemu"
+    emulatorImage: "quay.io/bpradipt/qemu-user-static:latest"
+  emulatorNodeSelector:
+    matchLabels:
+       kubernetes.io/os: linux
