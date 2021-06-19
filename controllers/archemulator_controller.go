@@ -42,8 +42,8 @@ type ArchEmulatorReconciler struct {
 // +kubebuilder:rbac:groups=emulator.multiarch.io,resources=archemulators,verbs=get;list;watch;create;update;patch;delete
 // +kubebuilder:rbac:groups=emulator.multiarch.io,resources=archemulators/status,verbs=get;update;patch
 // +kubebuilder:rbac:groups=emulator.multiarch.io,resources=archemulators/finalizers,verbs=update
-// +kubebuilder:rbac:groups=batch,resources=job,verbs=get;list;watch;create;update;patch;delete
-// +kubebuilder:rbac:groups=batch,resources=job/status,verbs=get;update;patch
+// +kubebuilder:rbac:groups=batch,resources=jobs,verbs=get;list;watch;create;update;patch;delete
+// +kubebuilder:rbac:groups=batch,resources=jobs/status,verbs=get;update;patch
 // +kubebuilder:rbac:groups=core,resources=pods,verbs=get;list;watch
 // +kubebuilder:rbac:groups=core,resources=node,verbs=get;list;watch
 
