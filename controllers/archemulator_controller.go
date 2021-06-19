@@ -114,7 +114,7 @@ func (r *ArchEmulatorReconciler) jobForArchEmulator(a *emulatorv1alpha1.ArchEmul
 					Containers: []corev1.Container{{
 						Image:           containerImage,
 						Name:            a.Spec.EmulatorType.EmulatorName,
-						Command:         []string{"--reset", "-p", "yes"},
+						Args:            []string{"--reset", "-p", "yes"},
 						ImagePullPolicy: "IfNotPresent",
 						SecurityContext: &corev1.SecurityContext{
 							Privileged: &isPrivileged,
