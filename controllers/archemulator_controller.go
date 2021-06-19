@@ -96,6 +96,10 @@ func (r *ArchEmulatorReconciler) jobForArchEmulator(a *emulatorv1alpha1.ArchEmul
 	ls := labelsForArchEmulator(a.Name)
 	isPrivileged := true
 
+	containerImage := "quay.io/bpradipt/qemu-user-static:latest"
+	if a.Spec.EmulatorType.EmulatorImage != "" {
+		containerImage = a.Spec.EmulatorType.EmulatorImage
+	}
 	job := &batchv1.Job{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      a.Name,
@@ -108,8 +112,8 @@ func (r *ArchEmulatorReconciler) jobForArchEmulator(a *emulatorv1alpha1.ArchEmul
 				},
 				Spec: corev1.PodSpec{
 					Containers: []corev1.Container{{
-						Image:           "multiarch/qemu-user-static:latest",
-						Name:            "emulator",
+						Image:           containerImage,
+						Name:            a.Spec.EmulatorType.EmulatorName,
 						Command:         []string{"--reset", "-p", "yes"},
 						ImagePullPolicy: "IfNotPresent",
 						SecurityContext: &corev1.SecurityContext{
