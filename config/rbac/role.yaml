@@ -7,6 +7,42 @@ metadata:
   name: manager-role
 rules:
 - apiGroups:
+  - batch
+  resources:
+  - job
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - batch
+  resources:
+  - job/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - ""
+  resources:
+  - node
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - pods
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
   - emulator.multiarch.io
   resources:
   - archemulators
@@ -18,6 +54,12 @@ rules:
   - patch
   - update
   - watch
+- apiGroups:
+  - emulator.multiarch.io
+  resources:
+  - archemulators/finalizers
+  verbs:
+  - update
 - apiGroups:
   - emulator.multiarch.io
   resources:
