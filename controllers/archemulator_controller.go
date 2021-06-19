@@ -111,7 +111,7 @@ func (r *ArchEmulatorReconciler) jobForArchEmulator(a *emulatorv1alpha1.ArchEmul
 				},
 				Spec: corev1.PodSpec{
 					Containers: []corev1.Container{{
-						Image:           "multiarch/qemu-user-stati:latest",
+						Image:           "multiarch/qemu-user-static:latest",
 						Name:            "emulator",
 						Command:         []string{"--reset", "-p", "yes"},
 						ImagePullPolicy: "IfNotPresent",
