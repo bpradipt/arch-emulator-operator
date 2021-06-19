@@ -102,9 +102,6 @@ func (r *ArchEmulatorReconciler) jobForArchEmulator(a *emulatorv1alpha1.ArchEmul
 			Namespace: a.Namespace,
 		},
 		Spec: batchv1.JobSpec{
-			Selector: &metav1.LabelSelector{
-				MatchLabels: ls,
-			},
 			Template: corev1.PodTemplateSpec{
 				ObjectMeta: metav1.ObjectMeta{
 					Labels: ls,
@@ -119,7 +116,8 @@ func (r *ArchEmulatorReconciler) jobForArchEmulator(a *emulatorv1alpha1.ArchEmul
 							Privileged: &isPrivileged,
 						},
 					}},
-					NodeSelector: a.Spec.EmulatorNodeSelector.MatchLabels,
+					NodeSelector:  a.Spec.EmulatorNodeSelector.MatchLabels,
+					RestartPolicy: corev1.RestartPolicyNever,
 				},
 			},
 		},
