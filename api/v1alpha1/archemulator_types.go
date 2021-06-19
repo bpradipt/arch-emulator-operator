@@ -29,7 +29,7 @@ type ArchEmulatorSpec struct {
 	// Important: Run "make" to regenerate code after modifying this file
 
 	// Specifies details of the emulator
-	Emulator ArchEmulatorType `json:"emulator"`
+	EmulatorType ArchEmulatorType `json:"emulatorType"`
 
 	// ArchEmulatorNodeSelector is used to filter the nodes on which to install
 	// emulator
@@ -42,7 +42,7 @@ type ArchEmulatorSpec struct {
 type ArchEmulatorType struct {
 
 	// Emulator name - eg. Qemu
-	EmulatorName string `json:"emulatorType"`
+	EmulatorName string `json:"emulatorName"`
 
 	// Container image providing the Emulator binary
 	// +optional
