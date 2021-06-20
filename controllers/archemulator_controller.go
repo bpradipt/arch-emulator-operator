@@ -87,6 +87,29 @@ func (r *ArchEmulatorReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error
 		return ctrl.Result{}, err
 	}
 
+	// Update the status
+
+	// Set the emulator type
+	archemulator.Status.EmulatorType = archemulator.Spec.EmulatorType
+
+	// Get nodeList based on selector
+	nodeList := &corev1.NodeList{}
+	listOpts := []client.ListOption{
+		client.MatchingLabels(archemulator.Spec.EmulatorNodeSelector.MatchLabels),
+	}
+	if err = r.List(ctx, nodeList, listOpts...); err != nil {
+		log.Error(err, "Failed to list nodes", "archemulator.Name", archemulator.Name)
+		return ctrl.Result{}, err
+	}
+
+	archemulator.Status.Nodes = getNodeNames(nodeList.Items)
+
+	err = r.Status().Update(ctx, archemulator)
+	if err != nil {
+		log.Error(err, "Failed to update archemulator status")
+		return ctrl.Result{}, err
+	}
+
 	return ctrl.Result{}, nil
 }
 
@@ -131,15 +154,25 @@ func (r *ArchEmulatorReconciler) jobForArchEmulator(a *emulatorv1alpha1.ArchEmul
 	return job
 }
 
+// Setup the resources watched by the controller
+func (r *ArchEmulatorReconciler) SetupWithManager(mgr ctrl.Manager) error {
+	return ctrl.NewControllerManagedBy(mgr).
+		For(&emulatorv1alpha1.ArchEmulator{}).
+		Owns(&batchv1.Job{}).
+		Complete(r)
+}
+
 // labelsForArchEmulator returns the labels for selecting the resources
 // belonging to the given archemulator CR name.
 func labelsForArchEmulator(name string) map[string]string {
 	return map[string]string{"app": "archemulator", "archemulator_cr": name}
 }
 
-func (r *ArchEmulatorReconciler) SetupWithManager(mgr ctrl.Manager) error {
-	return ctrl.NewControllerManagedBy(mgr).
-		For(&emulatorv1alpha1.ArchEmulator{}).
-		Owns(&batchv1.Job{}).
-		Complete(r)
+// Get NodeNames list
+func getNodeNames(nodes []corev1.Node) []string {
+	var nodeNames []string
+	for _, node := range nodes {
+		nodeNames = append(nodeNames, node.Name)
+	}
+	return nodeNames
 }
