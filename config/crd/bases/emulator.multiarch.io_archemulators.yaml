@@ -127,7 +127,7 @@ spec:
                 - type
                 type: object
               type: array
-            emulator:
+            emulatorType:
               description: Emulator name - Qemu etc
               properties:
                 emulatorImage:
@@ -145,7 +145,7 @@ spec:
                 type: string
               type: array
           required:
-          - emulator
+          - emulatorType
           - nodes
           type: object
       type: object

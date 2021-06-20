@@ -114,7 +114,7 @@ func (in *ArchEmulatorStatus) DeepCopyInto(out *ArchEmulatorStatus) {
 		*out = make([]string, len(*in))
 		copy(*out, *in)
 	}
-	out.Emulator = in.Emulator
+	out.EmulatorType = in.EmulatorType
 	if in.Conditions != nil {
 		in, out := &in.Conditions, &out.Conditions
 		*out = make([]conditionsv1.Condition, len(*in))

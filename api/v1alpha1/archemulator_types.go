@@ -58,7 +58,7 @@ type ArchEmulatorStatus struct {
 	Nodes []string `json:"nodes"`
 
 	// Emulator name - Qemu etc
-	Emulator ArchEmulatorType `json:"emulator"`
+	EmulatorType ArchEmulatorType `json:"emulatorType"`
 
 	// +patchMergeKey=type
 	// +patchStrategy=merge
