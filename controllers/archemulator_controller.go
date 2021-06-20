@@ -45,7 +45,7 @@ type ArchEmulatorReconciler struct {
 // +kubebuilder:rbac:groups=batch,resources=jobs,verbs=get;list;watch;create;update;patch;delete
 // +kubebuilder:rbac:groups=batch,resources=jobs/status,verbs=get;update;patch
 // +kubebuilder:rbac:groups=core,resources=pods,verbs=get;list;watch
-// +kubebuilder:rbac:groups=core,resources=node,verbs=get;list;watch
+// +kubebuilder:rbac:groups=core,resources=nodes,verbs=get;list;watch
 
 func (r *ArchEmulatorReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
 	ctx := context.Background()
