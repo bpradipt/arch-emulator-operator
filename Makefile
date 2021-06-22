@@ -62,6 +62,9 @@ uninstall: manifests kustomize
 deploy: manifests kustomize
 	cd config/manager && $(KUSTOMIZE) edit set image controller=${IMG}
 	cd config/default && $(KUSTOMIZE) edit set image kube-rbac-proxy=${IMG_RBAC_PROXY}
+ifeq ($(ARCH),ppc64le)
+	sed -i s/latest/ppc64le/g config/samples/emulator_v1alpha1_archemulator.yaml
+endif
 	$(KUSTOMIZE) build config/default | kubectl apply -f -
 
 # Generate manifests e.g. CRD, RBAC etc.

@@ -15,7 +15,7 @@ $ make install && make deploy IMG=quay.io/bpradipt/arch-emulator-operator
 ```
 For deploying on Power (`ppc64le`) use the following command
 ```
-$ make install && make deploy IMG=quay.io/bpradipt/check-node-role:ppc64le
+$ make install && make deploy IMG=quay.io/bpradipt/arch-emulator-operator:ppc64le
 ```
 
 This will deploy the controller POD in the `arch-emulator-operator-system`
