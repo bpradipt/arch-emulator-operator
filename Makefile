@@ -23,7 +23,13 @@ else
 GOBIN=$(shell go env GOBIN)
 endif
 
+IMG_RBAC_PROXY ?= quay.io/brancz/kube-rbac-proxy:v0.10.0
+
 ARCH := $(shell uname -m)
+
+ifeq ($(ARCH),ppc64le)
+	IMG_RBAC_PROXY = quay.io/brancz/kube-rbac-proxy:v0.10.0-ppc64le
+endif
 
 all: manager
 
@@ -55,6 +61,7 @@ uninstall: manifests kustomize
 # Deploy controller in the configured Kubernetes cluster in ~/.kube/config
 deploy: manifests kustomize
 	cd config/manager && $(KUSTOMIZE) edit set image controller=${IMG}
+	cd config/default && $(KUSTOMIZE) edit set image kube-rbac-proxy=${IMG_RBAC_PROXY}
 	$(KUSTOMIZE) build config/default | kubectl apply -f -
 
 # Generate manifests e.g. CRD, RBAC etc.
