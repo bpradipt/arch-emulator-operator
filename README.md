@@ -63,7 +63,7 @@ export REGISTRY_USER=<user>
 ```
 
 ```
-$ make docker build IMG=${REGISTRY}/${REGISTRY_USER}/arch-emulator-operator
+$ make docker-build IMG=${REGISTRY}/${REGISTRY_USER}/arch-emulator-operator
 $ make docker-push IMG=${REGISTRY}/${REGISTRY_USER}/arch-emulator-operator
 ```
 
