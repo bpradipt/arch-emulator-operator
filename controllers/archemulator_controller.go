@@ -68,13 +68,23 @@ func (r *ArchEmulatorReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error
 	}
 	// ArchEmulator instance found
 
+	// Get nodeList based on selector
+	nodeList := &corev1.NodeList{}
+	listOpts := []client.ListOption{
+		client.MatchingLabels(archemulator.Spec.EmulatorNodeSelector.MatchLabels),
+	}
+	if err = r.List(ctx, nodeList, listOpts...); err != nil {
+		log.Error(err, "Failed to list nodes", "archemulator.Name", archemulator.Name)
+		return ctrl.Result{}, err
+	}
+
 	// Check if the Job already exists, if not create a new one
 	found := &batchv1.Job{}
 	err = r.Get(ctx, types.NamespacedName{Name: archemulator.Name, Namespace: archemulator.Namespace}, found)
 	if err != nil && errors.IsNotFound(err) {
 		// Define a new Job
-		job := r.jobForArchEmulator(archemulator)
-		log.Info("Creating a new Job", "Job.Namespace", job.Namespace, "Job.Name", job.Name)
+		job := r.jobForArchEmulator(archemulator, int32(len(nodeList.Items)))
+		log.Info("Creating a new Job", "Job.Namespace", job.Namespace, "Job.Name", job.Name, "Job.Replicas", int32(len(nodeList.Items)))
 		err = r.Create(ctx, job)
 		if err != nil {
 			log.Error(err, "Failed to create new Job", "Job.Namespace", job.Namespace, "Job.Name", job.Name)
@@ -92,16 +102,6 @@ func (r *ArchEmulatorReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error
 	// Set the emulator type
 	archemulator.Status.EmulatorType = archemulator.Spec.EmulatorType
 
-	// Get nodeList based on selector
-	nodeList := &corev1.NodeList{}
-	listOpts := []client.ListOption{
-		client.MatchingLabels(archemulator.Spec.EmulatorNodeSelector.MatchLabels),
-	}
-	if err = r.List(ctx, nodeList, listOpts...); err != nil {
-		log.Error(err, "Failed to list nodes", "archemulator.Name", archemulator.Name)
-		return ctrl.Result{}, err
-	}
-
 	archemulator.Status.Nodes = getNodeNames(nodeList.Items)
 
 	err = r.Status().Update(ctx, archemulator)
@@ -114,10 +114,25 @@ func (r *ArchEmulatorReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error
 }
 
 // jobForArchEmulator returns an ArchEmulator Job object
-func (r *ArchEmulatorReconciler) jobForArchEmulator(a *emulatorv1alpha1.ArchEmulator) *batchv1.Job {
+func (r *ArchEmulatorReconciler) jobForArchEmulator(a *emulatorv1alpha1.ArchEmulator, numNodes int32) *batchv1.Job {
 
 	ls := labelsForArchEmulator(a.Name)
 	isPrivileged := true
+
+	var jobAffinity = corev1.Affinity{
+		PodAntiAffinity: &corev1.PodAntiAffinity{
+			RequiredDuringSchedulingIgnoredDuringExecution: []corev1.PodAffinityTerm{{
+				LabelSelector: &metav1.LabelSelector{
+					MatchExpressions: []metav1.LabelSelectorRequirement{{
+						Key:      "emulator-job",
+						Operator: "In",
+						Values:   []string{a.Name},
+					}},
+				},
+				TopologyKey: "kubernetes.io/hostname",
+			}},
+		},
+	}
 
 	containerImage := "quay.io/bpradipt/qemu-user-static:latest"
 	if a.Spec.EmulatorType.EmulatorImage != "" {
@@ -129,6 +144,8 @@ func (r *ArchEmulatorReconciler) jobForArchEmulator(a *emulatorv1alpha1.ArchEmul
 			Namespace: a.Namespace,
 		},
 		Spec: batchv1.JobSpec{
+			Parallelism: &numNodes,
+			Completions: &numNodes,
 			Template: corev1.PodTemplateSpec{
 				ObjectMeta: metav1.ObjectMeta{
 					Labels: ls,
@@ -145,6 +162,7 @@ func (r *ArchEmulatorReconciler) jobForArchEmulator(a *emulatorv1alpha1.ArchEmul
 					}},
 					NodeSelector:  a.Spec.EmulatorNodeSelector.MatchLabels,
 					RestartPolicy: corev1.RestartPolicyNever,
+					Affinity:      &jobAffinity,
 				},
 			},
 		},
