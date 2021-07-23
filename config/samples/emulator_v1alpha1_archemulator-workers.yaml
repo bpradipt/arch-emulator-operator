@@ -1,0 +1,12 @@
+apiVersion: emulator.multiarch.io/v1alpha1
+kind: ArchEmulator
+metadata:
+  name: archemulator-sample
+spec:
+  emulatorType:
+    emulatorName: "qemu"
+    emulatorImage: "quay.io/bpradipt/qemu-user-static:latest"
+  emulatorNodeSelector:
+    matchLabels:
+       node-role.kubernetes.io/worker: ""
+       kubernetes.io/os: linux
