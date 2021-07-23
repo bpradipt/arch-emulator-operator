@@ -124,7 +124,7 @@ func (r *ArchEmulatorReconciler) jobForArchEmulator(a *emulatorv1alpha1.ArchEmul
 			RequiredDuringSchedulingIgnoredDuringExecution: []corev1.PodAffinityTerm{{
 				LabelSelector: &metav1.LabelSelector{
 					MatchExpressions: []metav1.LabelSelectorRequirement{{
-						Key:      "emulator-job",
+						Key:      "job-name",
 						Operator: "In",
 						Values:   []string{a.Name},
 					}},
