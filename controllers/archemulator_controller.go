@@ -118,6 +118,8 @@ func (r *ArchEmulatorReconciler) jobForArchEmulator(a *emulatorv1alpha1.ArchEmul
 
 	ls := labelsForArchEmulator(a.Name)
 	isPrivileged := true
+	var ttl int32 = 10
+	var backoffLimit int32 = 1
 
 	var jobAffinity = corev1.Affinity{
 		PodAntiAffinity: &corev1.PodAntiAffinity{
@@ -144,8 +146,10 @@ func (r *ArchEmulatorReconciler) jobForArchEmulator(a *emulatorv1alpha1.ArchEmul
 			Namespace: a.Namespace,
 		},
 		Spec: batchv1.JobSpec{
-			Parallelism: &numNodes,
-			Completions: &numNodes,
+			Parallelism:             &numNodes,
+			Completions:             &numNodes,
+			TTLSecondsAfterFinished: &ttl,
+			BackoffLimit:            &backoffLimit,
 			Template: corev1.PodTemplateSpec{
 				ObjectMeta: metav1.ObjectMeta{
 					Labels: ls,
